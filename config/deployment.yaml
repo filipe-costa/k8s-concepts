@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chi-deploy
+  labels:
+    app: chi-deploy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: chi-app
+  # Pod Template
+  template:
+    metadata:
+      labels:
+        app: chi-app
+    spec:
+      containers:
+        - name: chi-container
+          image: chi
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3000
+          volumeMounts:
+          - mountPath: /var/logs
+            name: logs
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+      volumes:
+      - name: logs
+        persistentVolumeClaim:
+          claimName: chi-pvc
