@@ -19,11 +19,6 @@ spec:
       - name: chi-container
         image: chi
         imagePullPolicy: Never
-        ports:
-          - containerPort: 3000
-        volumeMounts:
-        - mountPath: /var/logs
-          name: logs
         readinessProbe:
           httpGet:
             path: /healthz
@@ -36,6 +31,11 @@ spec:
             port: 3000
           initialDelaySeconds: 15
           periodSeconds: 20
+        ports:
+          - containerPort: 3000
+        volumeMounts:
+        - mountPath: /var/logs
+          name: logs
       volumes:
       - name: logs
         persistentVolumeClaim:

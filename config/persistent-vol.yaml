@@ -28,37 +28,3 @@ spec:
   selector:
     matchLabels:
       type: local
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  namespace: kube-logging
-  name: kube-logging-pv
-  labels:
-    type: local
-spec:
-  storageClassName: manual
-  capacity:
-    storage: 5Gi
-  accessModes:
-    - ReadWriteMany
-  hostPath:
-    path: /data/logs/
-    type: DirectoryOrCreate
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  namespace: kube-logging
-  name: kube-logging-pvc
-spec:
-  storageClassName: manual
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 2Gi
-  selector:
-    matchLabels:
-      type: local
-    

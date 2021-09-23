@@ -63,6 +63,7 @@ spec:
         image: fluent/fluentd-kubernetes-daemonset:v1-debian-elasticsearch
         env:
           - name:  FLUENT_ELASTICSEARCH_HOST
+            # <hostname>.<namespace>.svc.cluster.local
             value: "elasticsearch.kube-logging.svc.cluster.local"
           - name:  FLUENT_ELASTICSEARCH_PORT
             value: "9200"
@@ -70,6 +71,8 @@ spec:
             value: "http"
           - name: FLUENTD_SYSTEMD_CONF
             value: 'disable'
+          - name: FLUENT_LOGSTASH_FORMAT
+            value: "true"
           # # X-Pack Authentication
           # # =====================
           # - name: FLUENT_ELASTICSEARCH_USER
@@ -83,19 +86,18 @@ spec:
             cpu: 100m
             memory: 200Mi
         volumeMounts:
-        - mountPath: /var/logs
-          name: logs
         - name: varlog
           mountPath: /var/log
         # When actual pod logs in /var/lib/docker/containers, the following lines should be used.
         - name: dockercontainerlogdirectory
           mountPath: /var/lib/docker/containers
           readOnly: true
+        # When actual pod logs in /var/log/pods, the following lines should be used.
+        # - name: dockercontainerlogdirectory
+        #   mountPath: /var/log/pods
+        #   readOnly: true
       terminationGracePeriodSeconds: 30
       volumes:
-      - name: logs
-        hostPath:
-          path: /data/logs/
       - name: varlog
         hostPath:
           path: /var/log
@@ -103,3 +105,7 @@ spec:
       - name: dockercontainerlogdirectory
         hostPath:
           path: /var/lib/docker/containers
+      # When actual pod logs in /var/log/pods, the following lines should be used.
+      # - name: dockercontainerlogdirectory
+      #   hostPath:
+      #     path: /var/log/pods
