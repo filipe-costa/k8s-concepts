@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chi-deploy
+  labels:
+    app: chi-deploy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: chi-app
+  # Pod Template
+  template:
+    metadata:
+      labels:
+        app: chi-app
+    spec:
+      containers:
+      - name: chi-container
+        image: chi
+        imagePullPolicy: Never
+        ports:
+          - containerPort: 3000
+        volumeMounts:
+        - mountPath: /var/logs
+          name: logs
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 3000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+      volumes:
+      - name: logs
+        persistentVolumeClaim:
+          claimName: chi-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chi-svc
+spec:
+  type: NodePort
+  selector:
+    app: chi-app
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: chi-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: chi.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: chi-svc
+            port:
+              number: 3000

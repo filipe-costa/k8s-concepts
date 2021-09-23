@@ -1,13 +1,11 @@
 .PHONY: \
 		build \
-		create-pv \
-		create-pvc \
-		deployment \
-		search \
-		aggregator \
-		kibana \
-		service \
-		ingress \
+		kube-logging-ns \
+		persistent-vol \
+		kibana-svc \
+		fluentd-svc \
+		elastic-svc \
+		chi-svc \
 		check-nginx-controller
 
 SHELL := /bin/bash
@@ -16,32 +14,26 @@ SHELL := /bin/bash
 build:
 	docker build -t chi .
 
-create-pv: 
-	kubectl apply -f ./config/pv.yaml
+kube-logging-ns:
+	kubectl apply -f ./config/kube-logging-ns.yaml
 
-create-pvc:
-	kubectl apply -f ./config/pv-claim.yaml
+persistent-vol: 
+	kubectl apply -f ./config/persistent-vol.yaml
 
-deployment:
-	kubectl apply -f ./config/deployment.yaml
+kibana-svc:
+	kubectl apply -f ./config/kibana-service.yaml
 
-search: 
-	kubectl apply -f ./config/elastic_search.yaml
+fluentd-svc:
+	kubectl apply -f ./config/fluentd-service.yaml
 
-aggregator:
-	kubectl apply -f ./config/aggregator.yaml
+elastic-svc:
+	kubectl apply -f ./config/elastic-service.yaml
 
-kibana: 
-	kubectl apply -f ./config/kibana.yaml
-
-service:
-	kubectl apply -f ./config/service.yaml
+chi-svc:
+	kubectl apply -f ./config/chi-service.yaml
 
 check-nginx-controller:
 	kubectl wait --namespace ingress-nginx \
 		--for=condition=ready pod \
 		--selector=app.kubernetes.io/component=controller \
 		--timeout=120s
-
-ingress:
-	kubectl apply -f ./config/ingress.yaml

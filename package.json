@@ -1,7 +1,7 @@
 {
   "name": "k8s-concepts",
   "version": "1.0.0",
-  "description": "K8s concepts: Pods, Deployments, Ingress Controller",
+  "description": "Minimum reproducible demo for Kubernetes Concepts",
   "main": "index.ts",
   "repository": {
     "type": "git",
