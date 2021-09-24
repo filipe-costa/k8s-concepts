@@ -68,11 +68,19 @@ Check if Fluentd is aggregating logs correctly:
 
 - Understand why Fluentd image doesn't allow to read custom logs stored at /data/logs (probably a lack of permissions?)
 
+    -  Most probably related to the [configuration setup](https://docs.fluentd.org/v/0.12/configuration/config-file).
+
 ## References
 [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+
 [DaemonSet](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/)
+
 [Service](https://kubernetes.io/docs/concepts/services-networking/service/)
+
 [DNS for Services and Pods](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/)
+
 [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/)
+
 [Ingress Controllers](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/)
+
 [Role-based Access Control (RBAC)](https://kubernetes.io/docs/reference/access-authn-authz/rbac/)
